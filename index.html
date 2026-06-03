@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Batalha dos Reis - Torneio 3.0 Mobile</title>
+<!-- Biblioteca para converter o HTML em Imagem JPG -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght=500;700;900&family=Montserrat:wght=400;600;700&display=swap');
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #060505;
+    background-image: radial-gradient(circle at center, #1c1510 0%, #060505 100%);
+    color: #f0ede6;
+    margin: 0;
+    padding: 10px;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+/* --- CABEÇALHO RESPONSIVO --- */
+.header-campeonato {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto 15px auto;
+    border: 2px solid #c9a054;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.9), inset 0 0 15px rgba(201, 160, 84, 0.3);
+    background: #121315;
+}
+
+.banner-imagem {
+    width: 100%;
+    height: auto;
+    max-height: 280px;
+    object-fit: cover;
+    display: block;
+}
+
+/* --- PAINEL DE CONTROLE (Acrílico Adaptável) --- */
+.painel-controle {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(28, 22, 16, 0.75) 0%, rgba(14, 11, 8, 0.9) 100%);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 2px solid rgba(201, 160, 84, 0.4);
+    border-top: 2px solid rgba(255, 230, 180, 0.6);
+    border-bottom: 2px solid rgba(135, 100, 40, 0.5);
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    max-width: 1150px;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6), inset 0 1px 2px rgba(255,255,255,0.15);
+}
+
+.status-salvamento {
+    font-size: 0.9rem;
+    color: #dfd5c2;
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: center;
+}
+
+.status-salvamento span {
+    color: #4cd137;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(76, 209, 55, 0.4);
+}
+
+.botoes-grupo {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+}
+
+/* Botões Cristalizados Ajustados para Toque */
+.btn-backup {
+    background: linear-gradient(180deg, #4a1515 0%, #2b0b0b 100%);
+    border: 1px solid #c9a054;
+    border-top-color: #ffebbc;
+    color: #f3dfb6;
+    font-family: 'Cinzel', serif;
+    padding: 10px 14px;
+    cursor: pointer;
+    border-radius: 6px;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    flex: 1 1 140px;
+    text-align: center;
+    min-height: 40px;
+}
+
+.btn-backup:hover {
+    background: linear-gradient(180deg, #611d1d 0%, #3d1010 100%);
+    border-color: #ffebbc;
+    color: #fff;
+}
+
+.btn-restaurar {
+    background: linear-gradient(180deg, #2c313c 0%, #1a1d24 100%);
+    border-color: #70798c;
+    color: #d1d7e3;
+}
+.btn-restaurar:hover {
+    background: linear-gradient(180deg, #3d4453 0%, #252933 100%);
+    border-color: #bcc4d6;
+}
+
+.btn-zerar {
+    background: linear-gradient(180deg, #7c1a1a 0%, #4a0d0d 100%);
+    border-color: #ff6b6b;
+    color: #ffcacc;
+}
+.btn-zerar:hover {
+    background: linear-gradient(180deg, #9e2525 0%, #631212 100%);
+    border-color: #ff9f9f;
+}
+
+/* --- SISTEMA DE ABAS SCROLLAVEL (Mobile-First) --- */
+.menu-abas {
+    display: flex;
+    gap: 5px;
+    margin: 0 auto 15px auto;
+    max-width: 1200px;
+    border-bottom: 3px solid #c9a054;
+    padding-bottom: 2px;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+}
+
+.menu-abas::-webkit-scrollbar {
+    height: 4px;
+}
+.menu-abas::-webkit-scrollbar-thumb {
+    background: #c9a054;
+    border-radius: 2px;
+}
+
+.aba-item {
+    background: linear-gradient(180deg, rgba(30, 32, 38, 0.8) 0%, rgba(18, 19, 22, 0.95) 100%);
+    backdrop-filter: blur(5px);
+    border: 2px solid rgba(201, 160, 84, 0.3);
+    border-bottom: none;
+    color: #b0a48f;
+    font-family: 'Cinzel', serif;
+    padding: 10px 16px;
+    cursor: pointer;
+    border-radius: 10px 10px 0 0;
+    font-weight: bold;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+    transition: all 0.25s ease;
+    display: inline-block;
+}
+
+.aba-item.ativa {
+    background: linear-gradient(180deg, #5c1919 0%, #360d0d 100%);
+    color: #ffebbc;
+    border-color: #c9a054;
+    border-top: 3px solid #ffebbc;
+    box-shadow: 0 -4px 15px rgba(201, 160, 84, 0.25);
+    transform: translateY(-1px);
+}
+
+.conteudo-aba {
+    display: none;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.conteudo-aba.ativo {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- CAIXINHAS PREMIUM --- */
+.box {
+    background: linear-gradient(135deg, rgba(22, 24, 29, 0.85) 0%, rgba(12, 13, 15, 0.98) 100%);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 2px solid rgba(201, 160, 84, 0.4);
+    border-top: 2px solid rgba(255, 233, 186, 0.5);
+    border-bottom: 2px solid rgba(115, 88, 41, 0.6);
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 12px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.7), inset 0 0 25px rgba(0,0,0,0.9);
+    position: relative;
+}
+
+h2, h3 {
+    font-family: 'Cinzel', serif;
+    color: #c9a054;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    margin-top: 0;
+    border-bottom: 2px solid rgba(201, 160, 84, 0.25);
+    padding-bottom: 10px;
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+}
+
+/* --- INPUTS DE INSCRIÇÃO --- */
+.jogadores-input-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.input-inscricao-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(10, 11, 13, 0.6);
+    padding: 6px 10px;
+    border: 1px solid rgba(201, 160, 84, 0.3);
+    border-radius: 6px;
+}
+
+input[type=text] {
+    background: rgba(30, 32, 38, 0.8);
+    border: 1px solid rgba(201, 160, 84, 0.25);
+    color: #fff;
+    padding: 8px;
+    border-radius: 6px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+input[type=text]:focus {
+    border-color: #ffebbc;
+    outline: none;
+}
+
+/* --- BRASÕES --- */
+.brasao-atleta {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+    border: 1.5px solid #c9a054;
+    flex-shrink: 0;
+}
+
+.alinhamento-nome-brasao {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    vertical-align: middle;
+}
+
+/* Cabeçalho da rodada */
+.rodada-header-flex {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: linear-gradient(90deg, #5c1919 0%, #210707 100%);
+    border-left: 5px solid #c9a054;
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 12px;
+}
+
+.rodada {
+    font-family: 'Cinzel', serif;
+    color: #ffebbc;
+    font-weight: 900;
+    font-size: 1rem;
+    text-align: center;
+}
+
+.btn-print {
+    background: linear-gradient(180deg, #332817 0%, #1c150c 100%);
+    border: 1px solid #c9a054;
+    color: #ffebbc;
+    padding: 8px 12px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    border-radius: 6px;
+    font-weight: bold;
+    text-transform: uppercase;
+    width: 100%;
+}
+
+.folga-container {
+    background: rgba(201, 160, 84, 0.06);
+    border: 1px dashed rgba(201, 160, 84, 0.4);
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.chave-titulo {
+    display: block;
+    color: #bfae93;
+    font-family: 'Cinzel', serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin: 12px 0 8px 0;
+    text-transform: uppercase;
+}
+
+/* --- CONFRONTOS ADAPTADOS PARA CELULAR --- */
+.jogo {
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.02);
+    margin-bottom: 8px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.jogo .lado-confronto {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 40%;
+}
+.jogo .lado-confronto.esquerda { justify-content: flex-end; text-align: right; }
+.jogo .lado-confronto.direita { justify-content: flex-start; text-align: left; }
+
+.jogo span { font-weight: 700; font-size: 0.8rem; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.mesa-tag {
+    font-family: 'Cinzel', serif;
+    background: linear-gradient(180deg, #2b2316 0%, #17120a 100%);
+    color: #ffebbc;
+    border: 1px solid #c9a054;
+    padding: 3px 6px;
+    font-size: 0.65rem;
+    border-radius: 4px;
+    font-weight: 900;
+    min-width: 45px;
+    text-align: center;
+}
+
+.container-scores {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+input[type=number] {
+    width: 38px;
+    height: 32px;
+    background: rgba(12, 13, 15, 0.8);
+    border: 1.5px solid rgba(201, 160, 84, 0.5);
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-align: center;
+    border-radius: 6px;
+    -moz-appearance: textfield;
+}
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
+/* --- TABELAS COM SCROLL LATERAL SE NECESSÁRIO --- */
+.grid-duas-colunas {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+}
+
+.tabela-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(10, 11, 13, 0.5);
+    min-width: 500px; /* Garante que os dados fiquem legíveis no scroll mobile */
+}
+
+th, td {
+    padding: 10px 6px;
+    text-align: center;
+    font-size: 0.8rem;
+}
+
+th {
+    font-family: 'Cinzel', serif;
+    background: linear-gradient(180deg, #5c1919 0%, #360d0d 100%);
+    color: #ffebbc;
+    border-bottom: 2px solid #c9a054;
+}
+
+td.td-nome-alinhado { text-align: left; padding-left: 10px; }
+
+/* --- MATA-MATA VERTICAL EXCLUSIVO PARA CELULAR --- */
+.Chave-Eliminatorias {
+    background: linear-gradient(135deg, rgba(20, 22, 26, 0.9) 0%, rgba(10, 11, 13, 0.98) 100%);
+    border: 2px solid #c9a054;
+    padding: 15px;
+    border-radius: 12px;
+}
+
+.titulo-eliminatorias {
+    font-family: 'Cinzel', serif;
+    text-align: center;
+    color: #fff;
+    font-size: 1.3rem;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid rgba(201, 160, 84, 0.3);
+    padding-bottom: 10px;
+}
+
+.estrutura-mata-mata {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.coluna-confrontos, .centro-final {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    height: auto;
+    width: 100%;
+}
+
+.bloco-confronto {
+    background: linear-gradient(180deg, rgba(30,32,38,0.9) 0%, rgba(18,19,22,0.95) 100%);
+    border: 1px solid rgba(201, 160, 84, 0.35);
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.fase-header {
+    font-family: 'Cinzel', serif;
+    color: #cfc4b2;
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+}
+
+.item-guerreiro {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    gap: 5px;
+}
+
+.item-guerreiro span.pos-tag {
+    font-family: 'Cinzel', serif;
+    color: #bfae93;
+    font-size: 0.75rem;
+    font-weight: 700;
+    width: 40px;
+}
+
+.item-guerreiro input[type=text].nome-trava {
+    padding: 6px; 
+    font-size: 0.8rem; 
+    border-color: rgba(201, 160, 84, 0.2);
+    background: rgba(10, 11, 13, 0.8);
+    color: #ffebbc;
+    font-weight: 700;
+    pointer-events: none;
+}
+
+.item-guerreiro input[type=number].desempate-penaltis { background: #4a1515; border-color: #ff6b6b; width: 32px;}
+
+.linhas-conectoras { display: none; } /* Escondido no celular para focar no fluxo vertical */
+
+.bloco-fase { width: 100%; }
+
+.bloco-grande-final {
+    border: 2px solid #c9a054;
+    background: linear-gradient(135deg, #2b2013 0%, #140f08 100%);
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.rodape-eliminatorias {
+    margin-top: 25px;
+    border-top: 1px dashed rgba(201, 160, 84, 0.4);
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+}
+
+.premio-box {
+    background: linear-gradient(135deg, #1c1610 0%, #0e0b08 100%);
+    border: 1px solid #c9a054;
+    padding: 12px;
+    border-radius: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.premio-box div { font-family: 'Cinzel', serif; color: #bfae93; font-size: 0.8rem; }
+.premio-box span.destaque-premio { font-family: 'Cinzel', serif; color: #fff; font-weight: 900; font-size: 0.95rem; }
+
+.bloco-terceiro {
+    background: linear-gradient(180deg, rgba(24,26,31,0.9) 0%, rgba(14,15,18,0.95) 100%);
+    border: 1px solid rgba(201, 160, 84, 0.3);
+    padding: 15px;
+    border-radius: 8px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.vencedor-destaque {
+    box-shadow: 0 0 20px rgba(76, 209, 55, 0.4);
+    border-color: #4cd137 !important;
+}
+
+/* --- MEDIA QUERIES PARA MAQUINAS GRANDES (DESKTOP) --- */
+@min-width: 768px {
+    body { padding: 25px; }
+    .painel-controle { flex-direction: row; justify-content: space-between; padding: 12px 25px; }
+    .botoes-grupo { width: auto; }
+    .btn-backup { flex: initial; padding: 8px 18px; }
+    .rodada-header-flex { flex-direction: row; justify-content: space-between; padding: 10px 16px; }
+    .btn-print { width: auto; }
+    .folga-container { flex-direction: row; gap: 35px; }
+    .jogo { padding: 12px 20px; justify-content: center; gap: 15px; }
+    .jogo .lado-confronto { width: 210px; }
+    .jogo span { font-size: 0.95rem; }
+    .input-inscricao-container { padding: 8px 12px; }
+    .grid-duas-colunas { grid-template-columns: 1fr 1fr; gap: 25px; }
+    .estrutura-mata-mata { display: grid; grid-template-columns: 1.2fr 0.3fr 1.2fr 0.3fr 1.2fr; align-items: center; gap: 15px; }
+    .coluna-confrontos { height: 520px; justify-content: space-around; }
+    .centro-final { height: 520px; justify-content: space-around; }
+    .linhas-conectoras { display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: #c9a054; }
+    .rodape-eliminatorias { flex-direction: row; justify-content: space-between; }
+    .premio-box { width: 220px; }
+    .bloco-terceiro { width: 280px; }
+    .menu-abas { overflow-x: visible; white-space: normal; }
+    .aba-item { padding: 12px 24px; font-size: 0.9rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="header-campeonato">
+    <img class="banner-imagem" src="Cabeçalhjo.jpg" alt="Batalha dos Reis - Cabeçalho">
+</div>
+
+<div class="painel-controle">
+    <div class="status-salvamento">🛡 Status: <span id="status-txt">Dados Carregados</span></div>
+    <div class="botoes-grupo">
+        <button class="btn-backup btn-zerar" onclick="zerarCampeonato()">💀 Zerar Tudo</button>
+        <button class="btn-backup" onclick="exportarBackup()">📥 Baixar JSON</button>
+        <button class="btn-backup btn-restaurar" onclick="document.getElementById('file-input').click()">📤 Subir JSON</button>
+        <input type="file" id="file-input" style="display:none;" onchange="importarBackup(this)">
+    </div>
+</div>
+
+<div class="menu-abas">
+    <div class="aba-item ativa" onclick="mudarAba('aba-inscricao', this)">👥 1. Inscrições</div>
+    <div class="aba-item" onclick="mudarAba('aba-rodadas', this)">⚔ 2. Confrontos</div>
+    <div class="aba-item" onclick="mudarAba('aba-classificacao', this)">🛡 3. Tabelas</div>
+    <div class="aba-item" onclick="mudarAba('aba-matamata', this)">🏆 4. Finais</div>
+</div>
+
+<div id="aba-inscricao" class="conteudo-aba ativo">
+    <div class="box">
+        <h2><span style="color:#c9a054;">⚔</span> Inscrição dos Guerreiros</h2>
+        <div class="chave-titulo">Grupo A</div>
+        <div class="jogadores-input-group">
+            <div class="input-inscricao-container"><img src="brasoes/A1.png" class="brasao-atleta" onerror="this.src='brasoes/default.png'"><input id="A1" value="Jogador A1" class="salvavel"></div>
+            <div class="input-inscricao-container"><img src="brasoes/A2.png" class="brasao-atleta" onerror="this.src='brasoes/default.png'"><input id="A2" value="Jogador A2" class="salvavel"></div>
+            <div class="input-inscricao-container"><img src="brasoes/A3.png" class="brasao-atleta" onerror="this.src='brasoes/default.png'"><input id="A3" value="Jogador A3" class="salvavel"></div>
+            <div class="input-inscricao-container"><img src="brasoes/A4.png" class="brasao-atleta" onerror="this.src='brasoes/default.png'"><input id="A4" value="Jogador A4" class="salvavel"></div>
+            <div class="input-inscricao-container"><img src="brasoes/A5.png" class="brasao-atleta" onerror="this.src='brasoes/default.png'"><input id="A5" value="Jogador A5" class="salvavel"></div>
+        </div>
+        <div class="chave-titulo">Grupo B</div>
+        <div class="jogadores-input-group">
+            <div class="input-inscricao-container"><img src="brasoes/B1.png" class="brasao-atleta" onerror="this.src='brasoes/default.png'"><input id="B1" value="Jogador B1" class="salvavel"></div>
+            <div class="input-inscricao-container"><img src="brasoes/B2.png" class="brasao-atleta" onerror="this.src='brasoes/default.png'"><input id="B2" value="Jogador B2" class="salvavel"></div>
+            <div class="input-inscricao-container"><img src="brasoes/B3.png" class="brasao-atleta" onerror="this.src='brasoes/default.png'"><input id="B3" value="Jogador B3" class="salvavel"></div>
+            <div class="input-inscricao-container"><img src="brasoes/B4.png" class="brasao-atleta" onerror="this.src='brasoes/default.png'"><input id="B4" value="Jogador B4" class="salvavel"></div>
+            <div class="input-inscricao-container"><img src="brasoes/B5.png" class="brasao-atleta" onerror="this.src='brasoes/default.png'"><input id="B5" value="Jogador B5" class="salvavel"></div>
+        </div>
+    </div>
+</div>
+
+<div id="aba-rodadas" class="conteudo-aba">
+    <div id="rodadas"></div>
+</div>
+
+<div id="aba-classificacao" class="conteudo-aba">
+    <div class="grid-duas-colunas">
+        <div class="box">
+            <h3>🛡 GRUPO A</h3>
+            <div class="tabela-wrapper">
+                <div id="tabA"></div>
+            </div>
+        </div>
+        <div class="box">
+            <h3>🛡 GRUPO B</h3>
+            <div class="tabela-wrapper">
+                <div id="tabB"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="aba-matamata" class="conteudo-aba">
+    <div class="Chave-Eliminatorias">
+        <div class="titulo-eliminatorias">Fase Eliminatória</div>
+        
+        <div class="estrutura-mata-mata">
+            <!-- Bloco Esquerdo das Quartas (Q1 e Q2) -->
+            <div class="coluna-confrontos">
+                <div class="bloco-fase">
+                    <div class="fase-header">Quartas 1 (Vant. Empate)</div>
+                    <div class="bloco-confronto" id="bloco_q1">
+                        <div class="item-guerreiro"><span class="pos-tag">1º A</span><input type="text" id="q1_g1" class="nome-trava"><input type="number" id="q1_p1" class="salvavel"></div>
+                        <div class="item-guerreiro"><span class="pos-tag">4º B</span><input type="text" id="q1_g2" class="nome-trava"><input type="number" id="q1_p2" class="salvavel"></div>
+                    </div>
+                </div>
+                
+                <div class="bloco-fase">
+                    <div class="fase-header">Quartas 2 (Vant. Empate)</div>
+                    <div class="bloco-confronto" id="bloco_q2">
+                        <div class="item-guerreiro"><span class="pos-tag">2º B</span><input type="text" id="q2_g1" class="nome-trava"><input type="number" id="q2_p1" class="salvavel"></div>
+                        <div class="item-guerreiro"><span class="pos-tag">3º A</span><input type="text" id="q2_g2" class="nome-trava"><input type="number" id="q2_p2" class="salvavel"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="linhas-conectoras">⏩</div>
+
+            <!-- Centro: Semifinais e Grande Final -->
+            <div class="centro-final">
+                <div class="bloco-fase container-semi-flex" style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
+                    <div>
+                        <div class="fase-header">Semi 1 (Pênaltis)</div>
+                        <div class="bloco-confronto" id="bloco_s1">
+                            <div class="item-guerreiro"><input type="text" id="s1_g1" class="nome-trava" placeholder="Venc. Q1"><div class="container-scores"><input type="number" id="s1_p1" class="salvavel"><input type="number" id="s1_pen1" placeholder="P" class="salvavel desempate-penaltis"></div></div>
+                            <div class="item-guerreiro"><input type="text" id="s1_g2" class="nome-trava" placeholder="Venc. Q2"><div class="container-scores"><input type="number" id="s1_p2" class="salvavel"><input type="number" id="s1_pen2" placeholder="P" class="salvavel desempate-penaltis"></div></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="fase-header">Semi 2 (Pênaltis)</div>
+                        <div class="bloco-confronto" id="bloco_s2">
+                            <div class="item-guerreiro"><input type="text" id="s2_g1" class="nome-trava" placeholder="Venc. Q3"><div class="container-scores"><input type="number" id="s2_p1" class="salvavel"><input type="number" id="s2_pen1" placeholder="P" class="salvavel desempate-penaltis"></div></div>
+                            <div class="item-guerreiro"><input type="text" id="s2_g2" class="nome-trava" placeholder="Venc. Q4"><div class="container-scores"><input type="number" id="s2_p2" class="salvavel"><input type="number" id="s2_pen2" placeholder="P" class="salvavel desempate-penaltis"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bloco-fase">
+                    <div class="fase-header" style="color:#c9a054; text-align: center; font-weight: bold; font-size: 1.1rem;">🏆 GRANDE FINAL</div>
+                    <div class="bloco-grande-final" id="bloco_final">
+                        <div class="item-guerreiro"><input type="text" id="f_g1" class="nome-trava" placeholder="Finalista 1"><div class="container-scores"><input type="number" id="f_p1" class="salvavel"><input type="number" id="f_pen1" placeholder="P" class="salvavel desempate-penaltis"></div></div>
+                        <div style="text-align: center; color:#c9a054; font-size:0.7rem; font-weight: bold; margin:4px 0;">VS</div>
+                        <div class="item-guerreiro"><input type="text" id="f_g2" class="nome-trava" placeholder="Finalista 2"><div class="container-scores"><input type="number" id="f_p2" class="salvavel"><input type="number" id="f_pen2" placeholder="P" class="salvavel desempate-penaltis"></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="linhas-conectoras">⏩</div>
+
+            <!-- Bloco Direito das Quartas (Q3 e Q4) -->
+            <div class="coluna-confrontos">
+                <div class="bloco-fase">
+                    <div class="fase-header">Quartas 3 (Vant. Empate)</div>
+                    <div class="bloco-confronto" id="bloco_q3">
+                        <div class="item-guerreiro"><span class="pos-tag">1º B</span><input type="text" id="q3_g1" class="nome-trava"><input type="number" id="q3_p1" class="salvavel"></div>
+                        <div class="item-guerreiro"><span class="pos-tag">4º A</span><input type="text" id="q3_g2" class="nome-trava"><input type="number" id="q3_p2" class="salvavel"></div>
+                    </div>
+                </div>
+                
+                <div class="bloco-fase">
+                    <div class="fase-header">Quartas 4 (Vant. Empate)</div>
+                    <div class="bloco-confronto" id="bloco_q4">
+                        <div class="item-guerreiro"><span class="pos-tag">2º A</span><input type="text" id="q4_g1" class="nome-trava"><input type="number" id="q4_p1" class="salvavel"></div>
+                        <div class="item-guerreiro"><span class="pos-tag">3º B</span><input type="text" id="q4_g2" class="nome-trava"><input type="number" id="q4_p2" class="salvavel"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="rodape-eliminatorias">
+            <div class="premio-box">
+                <div>🏆 MELHOR ATAQUE</div>
+                <span class="destaque-premio" id="guerreiro_ataque">Nenhum</span>
+            </div>
+            
+            <div class="bloco-terceiro">
+                <div class="fase-header" style="color: #cd7f32; text-align: center;">🥉 DISPUTA DE 3º LUGAR</div>
+                <div class="bloco-confronto" id="bloco_t3" style="background: transparent; border: none; box-shadow: none; padding: 0;">
+                    <div class="item-guerreiro"><input type="text" id="t3_g1" class="nome-trava" placeholder="Guerreiro 1"><div class="container-scores"><input type="number" id="t3_p1" class="salvavel"><input type="number" id="t3_pen1" placeholder="P" class="salvavel desempate-penaltis"></div></div>
+                    <div class="item-guerreiro"><input type="text" id="t3_g2" class="nome-trava" placeholder="Guerreiro 2"><div class="container-scores"><input type="number" id="t3_p2" class="salvavel"><input type="number" id="t3_pen2" placeholder="P" class="salvavel desempate-penaltis"></div></div>
+                </div>
+            </div>
+
+            <div class="premio-box">
+                <div>🛡 MELHOR DEFESA</div>
+                <span class="destaque-premio" id="guerreiro_defesa">Nenhum</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const rodadas=[
+{r:1,A:[["A1","A2"],["A3","A4"]],B:[["B1","B2"],["B3","B4"]],folgaA:"A5",folgaB:"B5"},
+{r:2,A:[["A1","A3"],["A2","A5"]],B:[["B1","B3"],["B2","B5"]],folgaA:"A4",folgaB:"B4"},
+{r:3,A:[["A1","A4"],["A3","A5"]],B:[["B1","B4"],["B3","B5"]],folgaA:"A2",folgaB:"B2"},
+{r:4,A:[["A1","A5"],["A2","A4"]],B:[["B1","B5"],["B2","B4"]],folgaA:"A3",folgaB:"B3"},
+{r:5,A:[["A2","A3"],["A4","A5"]],B:[["B2","B3"],["B4","B5"]],folgaA:"A1",folgaB:"B1"}
+];
+
+const distribuicaoMesas = {
+    1: { A_0: "Mesa 1", A_1: "Mesa 2", B_0: "Mesa 3", B_1: "Mesa 4" },
+    2: { A_0: "Mesa 4", A_1: "Mesa 3", B_0: "Mesa 2", B_1: "Mesa 1" },
+    3: { A_0: "Mesa 2", A_1: "Mesa 1", B_0: "Mesa 4", B_1: "Mesa 3" },
+    4: { A_0: "Mesa 3", A_1: "Mesa 4", B_0: "Mesa 1", B_1: "Mesa 2" },
+    5: { A_0: "Mesa 1", A_1: "Mesa 2", B_0: "Mesa 3", B_1: "Mesa 4" }
+};
+
+let classificadosGrupoA = [];
+let classificadosGrupoB = [];
+let estatísticasGlobais = {};
+
+function mudarAba(idAba, elementoAba) {
+    document.querySelectorAll('.conteudo-aba').forEach(conteudo => {conteudo.classList.remove('ativo');});
+    document.querySelectorAll('.aba-item').forEach(aba => {aba.classList.remove('ativa');});
+    document.getElementById(idAba).classList.add('ativo');
+    elementoAba.classList.add('ativa');
+}
+
+function obterUrlBrasao(idOriginal) {
+    return `brasoes/${idOriginal}.png`;
+}
+
+function montar(){
+let h='';
+rodadas.forEach((rod,ri)=>{
+h+=`<div class="box" id="caixa_rodada_${rod.r}">
+    <div class="rodada-header-flex">
+        <div class="rodada">⚔ RODADA ${rod.r}</div>
+        <button class="btn-print" data-html2canvas-ignore="true" onclick="salvarRodadaComoImagem(${rod.r})">📸 Salvar Imagem</button>
+    </div>
+    <div class="folga-container">
+        <div>💤 Folga A: <span class="alinhamento-nome-brasao" id="folgaA_${rod.r}"></span></div>
+        <div>💤 Folga B: <span class="alinhamento-nome-brasao" id="folgaB_${rod.r}"></span></div>
+    </div>
+    <span class="chave-titulo">Grupo A</span>`;
+    
+rod.A.forEach((j,ji)=>{
+let mesa = distribuicaoMesas[rod.r][`A_${ji}`];
+h+=`<div class=jogo>
+<div class="mesa-tag">${mesa}</div>
+<div class="lado-confronto esquerda">
+    <span id="lbl_${rod.r}_${j[0]}">${j[0]}</span>
+    <img src="${obterUrlBrasao(j[0])}" class="brasao-atleta" onerror="this.src='brasoes/default.png'">
+</div>
+<div class="container-scores">
+<input type=number id="rod${rod.r}_gA_${j[0]}_x_${j[1]}" class="salvavel"> x
+<input type=number id="rod${rod.r}_gA_${j[1]}_y_${j[0]}" class="salvavel">
+</div>
+<div class="lado-confronto direita">
+    <img src="${obterUrlBrasao(j[1])}" class="brasao-atleta" onerror="this.src='brasoes/default.png'">
+    <span id="lbl_${rod.r}_${j[1]}">${j[1]}</span>
+</div>
+</div>`;
+});
+
+h+=`<span class="chave-titulo">Grupo B</span>`;
+rod.B.forEach((j,ji)=>{
+let mesa = distribuicaoMesas[rod.r][`B_${ji}`];
+h+=`<div class=jogo>
+<div class="mesa-tag">${mesa}</div>
+<div class="lado-confronto esquerda">
+    <span id="lbl_${rod.r}_${j[0]}">${j[0]}</span>
+    <img src="${obterUrlBrasao(j[0])}" class="brasao-atleta" onerror="this.src='brasoes/default.png'">
+</div>
+<div class="container-scores">
+<input type=number id="rod${rod.r}_gB_${j[0]}_x_${j[1]}" class="salvavel"> x
+<input type=number id="rod${rod.r}_gB_${j[1]}_y_${j[0]}" class="salvavel">
+</div>
+<div class="lado-confronto direita">
+    <img src="${obterUrlBrasao(j[1])}" class="brasao-atleta" onerror="this.src='brasoes/default.png'">
+    <span id="lbl_${rod.r}_${j[1]}">${j[1]}</span>
+</div>
+</div>`;
+});
+h+='</div>';
+});
+document.getElementById('rodadas').innerHTML=h;
+
+document.body.addEventListener('input', function(e) {
+    if(e.target.classList.contains('salvavel')) {
+        atualizar();
+    }
+});
+}
+
+function salvarRodadaComoImagem(numeroRodada) {
+    const containerAlvo = document.getElementById(`caixa_rodada_${numeroRodada}`);
+    if (!containerAlvo) return;
+
+    html2canvas(containerAlvo, {
+        backgroundColor: "#060505",
+        scale: 2,
+        logging: false,
+        useCORS: true
+    }).then(canvas => {
+        const imagemData = canvas.toDataURL("image/jpeg", 0.9);
+        const linkDownload = document.createElement("a");
+        linkDownload.download = `Rodada_${numeroRodada}_Batalha_dos_Reis.jpg`;
+        linkDownload.href = imagemData;
+        linkDownload.click();
+    });
+}
+
+function tabela(grupo){
+let t={};
+for(let i=1;i<=5;i++) {
+    let elem = document.getElementById(grupo+i);
+    let nomeReal = elem ? elem.value : (grupo + i);
+    t[grupo+i]={id:grupo+i,nome:nomeReal,P:0,J:0,V:0,E:0,D:0,GP:0,GC:0};
+    if(!estatísticasGlobais[nomeReal]) estatísticasGlobais[nomeReal] = {idOriginal: grupo+i, gp:0, gc:0, jogou:false};
+    
+    for(let r=1; r<=5; r++) {
+        let labelNome = document.getElementById(`lbl_${r}_${grupo+i}`);
+        if(labelNome) labelNome.innerText = nomeReal;
+    }
+}
+
+rodadas.forEach(r => {
+    let idOriginalFolga = r['folga' + grupo];
+    let elementoFolgaReal = document.getElementById(idOriginalFolga);
+    let elementoTextoFolga = document.getElementById(`folga${grupo}_${r.r}`);
+    if(elementoFolgaReal && elementoTextoFolga) {
+        elementoTextoFolga.innerHTML = `<img src="${obterUrlBrasao(idOriginalFolga)}" class="brasao-atleta" onerror="this.src='brasoes/default.png'"> <b>${elementoFolgaReal.value}</b>`;
+    }
+});
+
+rodadas.forEach((r)=>{
+(r[grupo]||[]).forEach((j)=>{
+let idInputX = `rod${r.r}_g${grupo}_${j[0]}_x_${j[1]}`;
+let idInputY = `rod${r.r}_g${grupo}_${j[1]}_y_${j[0]}`;
+
+let inputX = document.getElementById(idInputX);
+let inputY = document.getElementById(idInputY);
+
+let x = inputX ? inputX.value : '';
+let y = inputY ? inputY.value : '';
+
+if(x===''||y==='') return;
+x=+x;y=+y;
+
+let A=t[j[0]],B=t[j[1]];
+A.J++;B.J++;A.GP+=x;A.GC+=y;B.GP+=y;B.GC+=x;
+
+if(x>y){A.V++;A.P+=3;B.D++;}
+else if(y>x){B.V++;B.P+=3;A.D++;}
+else{A.E++;B.E++;A.P++;B.P++;}
+});
+});
+
+let arr=Object.values(t).map(v=>({...v,SG:v.GP-v.GC}))
+.sort((a,b)=>b.P-a.P||b.SG-a.SG||b.GP-a.GP||b.V-a.V);
+
+arr.forEach(jog => {
+    if(jog.J > 0) {
+        estatísticasGlobais[jog.nome] = { idOriginal: jog.id, gp: jog.GP, gc: jog.GC, jogou: true };
+    }
+});
+
+if(grupo === 'A') classificadosGrupoA = arr;
+if(grupo === 'B') classificadosGrupoB = arr;
+
+let h='<table><tr><th>POS</th><th>GUERREIRO</th><th>P</th><th>J</th><th>V</th><th>E</th><th>D</th><th>GP</th><th>GC</th><th>SG</th><th>%</th></tr>';
+arr.forEach((x,i)=>h+=`<tr class="${i<4?'classificado':''}"><td><b>${i+1}º</b></td><td class="td-nome-alinhado"><div class="alinhamento-nome-brasao"><img src="${obterUrlBrasao(x.id)}" class="brasao-atleta" onerror="this.src='brasoes/default.png'"> <span>${x.nome}</span></div></td><td>${x.P}</td><td>${x.J}</td><td>${x.V}</td><td>${x.E}</td><td>${x.D}</td><td>${x.GP}</td><td>${x.GC}</td><td>${x.SG}</td><td>${x.J?((x.P/(x.J*3))*100).toFixed(0):0}%</td></tr>`);
+h+='</table>';
+document.getElementById('tab'+grupo).innerHTML=h;
+}
+
+function resolverConfronto(idFase, colG1, colG2, colP1, colP2, idVenc, idPerd, temVantagemG1, colPen1 = null, colPen2 = null) {
+    let g1 = document.getElementById(colG1).value;
+    let g2 = document.getElementById(colG2).value;
+    let p1 = document.getElementById(colP1).value;
+    let p2 = document.getElementById(colP2).value;
+
+    if(!g1 || !g2 || p1 === '' || p2 === '') return {venc: '', perd: ''};
+
+    p1 = +p1; p2 = +p2;
+    let vencedor = '';
+    let perdedor = '';
+
+    if (p1 > p2) {
+        vencedor = g1; perdedor = g2;
+    } else if (p2 > p1) {
+        vencedor = g2; perdedor = g1;
+    } else {
+        if (temVantagemG1) {
+            vencedor = g1; perdedor = g2; 
+        } else if (colPen1 && colPen2) {
+            let pen1 = document.getElementById(colPen1).value;
+            let pen2 = document.getElementById(colPen2).value;
+            if (pen1 !== '' && pen2 !== '') {
+                pen1 = +pen1; pen2 = +pen2;
+                if (pen1 > pen2) { vencedor = g1; perdedor = g2; }
+                else if (pen2 > pen1) { vencedor = g2; perdedor = g1; }
+            }
+        }
+    }
+
+    if (idVenc && vencedor) document.getElementById(idVenc).value = vencedor;
+    if (idPerd && perdedor) document.getElementById(idPerd).value = perdedor;
+
+    return {venc: vencedor, perd: perdedor};
+}
+
+function atualizarMataMata() {
+    if(classificadosGrupoA[0]) document.getElementById('q1_g1').value = classificadosGrupoA[0].nome;
+    if(classificadosGrupoB[3]) document.getElementById('q1_g2').value = classificadosGrupoB[3].nome;
+
+    if(classificadosGrupoB[1]) document.getElementById('q2_g1').value = classificadosGrupoB[1].nome;
+    if(classificadosGrupoA[2]) document.getElementById('q2_g2').value = classificadosGrupoA[2].nome;
+
+    if(classificadosGrupoB[0]) document.getElementById('q3_g1').value = classificadosGrupoB[0].nome;
+    if(classificadosGrupoA[3]) document.getElementById('q3_g2').value = classificadosGrupoA[3].nome;
+
+    if(classificadosGrupoA[1]) document.getElementById('q4_g1').value = classificadosGrupoA[1].nome;
+    if(classificadosGrupoB[2]) document.getElementById('q4_g2').value = classificadosGrupoB[2].nome;
+
+    const camposMataMata = ['s1_g1', 's1_g2', 's2_g1', 's2_g2', 'f_g1', 'f_g2', 't3_g1', 't3_g2'];
+    camposMataMata.forEach(id => { let el = document.getElementById(id); if(el) el.value = ''; });
+
+    let q1 = resolverConfronto('q1', 'q1_g1', 'q1_g2', 'q1_p1', 'q1_p2', 's1_g1', null, true);
+    let q2 = resolverConfronto('q2', 'q2_g1', 'q2_g2', 'q2_p1', 'q2_p2', 's1_g2', null, true);
+    let q3 = resolverConfronto('q3', 'q3_g1', 'q3_g2', 'q3_p1', 'q3_p2', 's2_g1', null, true);
+    let q4 = resolverConfronto('q4', 'q4_g1', 'q4_g2', 'q4_p1', 'q4_p2', 's2_g2', null, true);
+
+    let s1 = resolverConfronto('s1', 's1_g1', 's1_g2', 's1_p1', 's1_p2', 'f_g1', 't3_g1', false, 's1_pen1', 's1_pen2');
+    let s2 = resolverConfronto('s2', 's2_g1', 's2_g2', 's2_p1', 's2_p2', 'f_g2', 't3_g2', false, 's2_pen1', 's2_pen2');
+
+    let disputaFinal = resolverConfronto('final', 'f_g1', 'f_g2', 'f_p1', 'f_p2', null, null, false, 'f_pen1', 'f_pen2');
+    let disputaTerceiro = resolverConfronto('t3', 't3_g1', 't3_g2', 't3_p1', 't3_p2', null, null, false, 't3_pen1', 't3_pen2');
+
+    document.querySelectorAll('.bloco-confronto, .bloco-grande-final').forEach(b => b.classList.remove('vencedor-destaque'));
+    if(disputaFinal.venc) document.getElementById('bloco_final').classList.add('vencedor-destaque');
+}
+
+function calcularDestaques() {
+    let melhorAtaque = {nome: 'Nenhum', gols: -1, idOriginal: ''};
+    let melhorDefesa = {nome: 'Nenhum', gols: 9999, idOriginal: ''};
+    let teveJogo = false;
+
+    Object.keys(estatísticasGlobais).forEach(nome => {
+        let jog = estatísticasGlobais[nome];
+        if(jog.jogou) {
+            teveJogo = true;
+            if(jog.gp > melhorAtaque.gols) { melhorAtaque = {nome: nome, gols: jog.gp, idOriginal: jog.idOriginal}; }
+            if(jog.gc < melhorDefesa.gols) { melhorDefesa = {nome: nome, gols: jog.gc, idOriginal: jog.idOriginal}; }
+        }
+    });
+
+    if(teveJogo) {
+        document.getElementById('guerreiro_ataque').innerHTML = `<div class="alinhamento-nome-brasao" style="justify-content:center;"><img src="${obterUrlBrasao(melhorAtaque.idOriginal)}" class="brasao-atleta" onerror="this.src='brasoes/default.png'"> <span>${melhorAtaque.nome} (${melhorAtaque.gols} GP)</span></div>`;
+        document.getElementById('guerreiro_defesa').innerHTML = `<div class="alinhamento-nome-brasao" style="justify-content:center;"><img src="${obterUrlBrasao(melhorDefesa.idOriginal)}" class="brasao-atleta" onerror="this.src='brasoes/default.png'"> <span>${melhorDefesa.nome} (${melhorDefesa.gc} GC)</span></div>`;
+    } else {
+        document.getElementById('guerreiro_ataque').innerText = "Nenhum";
+        document.getElementById('guerreiro_defesa').innerText = "Nenhum";
+    }
+}
+
+function atualizar(){
+    estatísticasGlobais = {};
+    tabela('A');
+    tabela('B');
+    atualizarMataMata();
+    calcularDestaques();
+    
+    let dadosTorneio = {};
+    document.querySelectorAll('.salvavel').forEach(input => {
+        dadosTorneio[input.id] = input.value;
+    });
+    localStorage.setItem('batalhaDosReis_dados', JSON.stringify(dadosTorneio));
+    document.getElementById('status-txt').innerHTML = '<span>Salvo!</span>';
+}
+
+function carregarDadosSalvos() {
+    let dadosSalvos = localStorage.getItem('batalhaDosReis_dados');
+    if(dadosSalvos) {
+        let dados = JSON.parse(dadosSalvos);
+        Object.keys(dados).forEach(id => {
+            let elemento = document.getElementById(id);
+            if(elemento) elemento.value = dados[id];
+        });
+    }
+}
+
+function zerarCampeonato() {
+    let confirmar = confirm("🚨 Deseja ZERAR todo o campeonato?\nIsso apagará permanentemente todos os placares e dados atuais!");
+    if(confirmar) {
+        localStorage.removeItem('batalhaDosReis_dados');
+        for(let i=1; i<=5; i++) {
+            document.getElementById('A'+i).value = 'Jogador A' + i;
+            document.getElementById('B'+i).value = 'Jogador B' + i;
+        }
+        document.querySelectorAll('.salvavel').forEach(input => {
+            if(input.id.startsWith('A') || input.id.startsWith('B')) return;
+            input.value = '';
+        });
+        atualizar();
+        alert("O campeonato foi resetado!");
+    }
+}
+
+function exportarBackup() {
+    let dadosSalvos = localStorage.getItem('batalhaDosReis_dados');
+    if(!dadosSalvos) { alert("Não há dados para exportar!"); return; }
+    let blob = new Blob([dadosSalvos], {type: "application/json"});
+    let url = URL.createObjectURL(blob);
+    let a = document.createElement('a');
+    a.href = url;
+    a.download = "backup_batalha_dos_reis.json";
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+function importarBackup(input) {
+    let arquivo = input.files[0];
+    if(!arquivo) return;
+    let reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            let dados = JSON.parse(e.target.result);
+            localStorage.setItem('batalhaDosReis_dados', JSON.stringify(dados));
+            carregarDadosSalvos();
+            atualizar();
+            alert("Backup Restaurado!");
+        } catch(err) {
+            alert("Erro no arquivo.");
+        }
+    };
+    reader.readAsText(arquivo);
+    input.value = '';
+}
+
+montar();
+carregarDadosSalvos();
+atualizar();
+</script>
+</body>
+</html>
